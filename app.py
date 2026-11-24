@@ -34,9 +34,9 @@ async def verify_webhook(
 
 def valid_signature(raw_body: bytes, signature: str | None) -> bool:
     secret = os.getenv("META_APP_SECRET", "")
-    # During initial local setup, allow unsigned requests only when no app secret is configured.
+    # Never accept unsigned webhook events on a public deployment.
     if not secret:
-        return True
+        return False
     if not signature or not signature.startswith("sha256="):
         return False
     digest = hmac.new(secret.encode(), raw_body, hashlib.sha256).hexdigest()
