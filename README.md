@@ -6,6 +6,7 @@ A starter webhook backend for an Instagram assistant using Meta's **official Ins
 - FastAPI health endpoint at `/`
 - Meta webhook verification at `/webhook`
 - Webhook event receiver with request-signature validation when `META_APP_SECRET` is configured
+- Official webhook-based inbound DM auto-reply starter (requires valid Meta credentials and permissions)
 - No Instagram password/session automation
 
 ## Important limitations
@@ -35,6 +36,18 @@ A starter webhook backend for an Instagram assistant using Meta's **official Ins
 - `INSTAGRAM_ACCOUNT_ID`: eligible Instagram professional account ID.
 
 Set real secrets in your hosting provider's environment-variable settings, never in GitHub source files.
+
+## DM auto-reply configuration
+Set these environment variables in your hosting provider (never commit real values):
+- `META_VERIFY_TOKEN`: same random verification string entered in Meta webhook setup.
+- `META_APP_SECRET`: App Secret from Meta App settings; used to verify webhook signatures.
+- `META_ACCESS_TOKEN`: valid Instagram messaging access token.
+- `INSTAGRAM_ACCOUNT_ID`: Instagram professional account ID used by the API.
+- `META_GRAPH_API_VERSION`: API version supported by your Meta app.
+- `META_GRAPH_API_BASE`: use the API host that matches your Meta login product (`https://graph.instagram.com` for Instagram Login).
+- `AUTO_REPLY_TEXT`: optional fixed reply text.
+
+The current handler sends the same configured reply to each inbound text DM. It ignores echoes and does not implement AI-generated responses yet. Meta permissions, webhook subscription to `messages`, account eligibility, and the applicable messaging window must be configured before this works. Test with an account permitted by Meta's app roles while the app is in development mode.
 
 ## Next setup
 Deploy this FastAPI app to a supported hosting service, configure its public HTTPS webhook URL in Meta Developers, then complete Meta's Instagram permissions and account connection. Only after that should an official DM/comment reply handler be added.
